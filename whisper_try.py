@@ -3,7 +3,7 @@
 import subprocess
 import os
 
-def transcribe_audio(audio_file):
+def transcribe_audio(audio_file, model_name):
 
     if not os.path.exists(audio_file):
         raise FileNotFoundError(f"Аудиофайл не найден: {audio_file}")
@@ -13,9 +13,10 @@ def transcribe_audio(audio_file):
     cmd = [
         
         "./build/bin/whisper-cli",
-        "-m", "models/ggml-large-v3-turbo-q5_0.bin",
+        "-m", "models/ggml-"+model_name+'.bin',
         "-l", "ru",
-        "--output-txt",
+        "--no-timestamps",
+        #"--output-txt",
         "-f", audio_file
     ]
 
@@ -23,13 +24,13 @@ def transcribe_audio(audio_file):
     try:
         os.chdir(whisper_dir)
         
-        subprocess.run(cmd, check=True)
-       
+        res = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        '''
         txt_file = f"{audio_file}.txt"
         with open(txt_file, 'r', encoding='utf-8') as f:
             text = f.read().strip()
-        
-        return text
+        '''
+        return res.stdout.strip()
         
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"Ошибка транскрибации: {e}")
