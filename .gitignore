@@ -25,5 +25,5 @@ temp/
 *.tmp
 
 
-.DS_Store       # macOS
-Thumbs.db       # Windows.env
+.DS_Store       
+Thumbs.db       
