@@ -1,0 +1,29 @@
+
+venv/
+env/
+.venv/
+
+
+__pycache__/
+*.pyc
+*.pyo
+
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+
+.env
+config.ini
+secrets.json
+
+
+*.log
+temp/
+*.tmp
+
+
+.DS_Store       # macOS
+Thumbs.db       # Windows

@@ -9,6 +9,7 @@ import threading
 from tkinter import filedialog, messagebox
 from pathlib import Path
 import whisper_try
+import summarize
 from datetime import datetime
 
 class VoiceRecorder:
@@ -40,12 +41,12 @@ class VoiceRecorder:
         self.modelswp = ['tiny', 'base', 'base.en', 'medium', 'large-v3-turbo-q5_0']
         self.current_version = tk.StringVar()
         self.model_combobox = ttk.Combobox(
-        self.root,                     # родительский контейнер
-        textvariable=self.current_version,  # связываем с переменной
-        values=self.modelswp,          # список вариантов
-        state="readonly",         # запрещаем ручной ввод (только выбор из списка)
+        self.root,
+        textvariable=self.current_version,
+        values=self.modelswp,
+        state="readonly",
         font=("Arial", 14),
-        width=20                  # ширина в символах
+        width=20 
         )
         self.model_combobox.set("large-v3-turbo-q5_0") 
         self.model_combobox.pack(in_=self.top_frame, side="right")
@@ -97,17 +98,7 @@ class VoiceRecorder:
         stream.stop_stream()
         stream.close()
         audio.terminate()
-
-        exists = True
-        i = 1
-        desktop = Path.home() / "Desktop" / "VoiceRecordings"
-        os.makedirs(desktop, exist_ok=True)
-        while exists:
-            #if os.path.exists(f'recording{i}.wav'):
-            if (desktop / f"recording{i}.wav").exists():
-                i += 1
-            else:
-                exists = False
+  
         self.qsn = messagebox.askyesno("Saving", "Вы хотите сохранить эту запись?")
         if self.qsn:
             folder_path = filedialog.askdirectory(title="Выберите папку для сохранения")
@@ -116,7 +107,7 @@ class VoiceRecorder:
             #desktop = Path.home() / "Desktop" / "VoiceRecordings"
             desktop2 = Path.home() / folder_path / 'VoiceRecordings'
             os.makedirs(desktop2, exist_ok=True)
-            date = str(datetime.now())[:10]+'_'+str(datetime.now())[11:-7]
+            date = str(datetime.now())[:10]+'_'+str(datetime.now())[11:-7].replace(':', '-')
             # Создаём путь к файлу
             filename = desktop2 / f'{date}.wav'
 
@@ -128,11 +119,20 @@ class VoiceRecorder:
             sound_file.writeframes(b''.join(frames))
             sound_file.close()
             
-            text = whisper_try.transcribe_audio(str(filename), str(self.cur))
+            text = whisper_try.transcribe_audio(audio_file=str(filename), model_name=str(self.cur))
             text_path = filename.with_suffix('.txt')
             
             with open(text_path, 'w', encoding='utf-8') as file:
                 file.write(text)
+            '''
+            with open(text_path, 'r') as file:
+                if file.readline() == 'Продолжение следует...':
+                    f = open(text_path, 'w+')
+                    f.write('')
+                    f.close()
+                else:
+            '''
+            summarize.summarize_file(str(text_path))
             print(f'переведено с помощью:{self.cur}')
             
             
