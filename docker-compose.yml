@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: flet-app:latest
+    container_name: flet-app
+    ports:
+      - "8550:8550"
+    volumes:
+      # Раскомментируйте для разработки с hot-reload
+      # - .:/app
+      - app-data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+    # Для работы с аудио может потребоваться доступ к устройствам
+    devices:
+      - /dev/snd:/dev/snd
+    # Настройки для GUI приложений (если используете flet-desktop)
+    # environment:
+    #   - DISPLAY=${DISPLAY}
+    # volumes:
+    #   - /tmp/.X11-unix:/tmp/.X11-unix
+    restart: unless-stopped
+
+volumes:
+  app-data:
