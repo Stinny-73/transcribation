@@ -2,7 +2,7 @@
 venv/
 env/
 .venv/
-
+.env/
 
 __pycache__/
 *.pyc
@@ -28,3 +28,4 @@ temp/
 .DS_Store       
 Thumbs.db       
 /whisper.cpp/
+/notes/

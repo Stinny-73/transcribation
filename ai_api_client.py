@@ -1,9 +1,10 @@
 import sys
 from pathlib import Path
 import requests
+from config import config
 def ai_request(promt):
     url = 'https://api.deepseek.com/v1/chat/completions'
-    ai_key = 'sk-5af24aa74e9c497bb5afdee3043a945b'
+    ai_key = config.API_DEEPSEEK
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {ai_key}",  

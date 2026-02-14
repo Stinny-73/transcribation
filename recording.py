@@ -61,7 +61,7 @@ class Recording:
         cmd = [
             executable,
             "-m", os.path.join("models", f"ggml-{model_name}.bin"),
-            "-l", "ru",
+            "-l", "auto",
             "--no-timestamps",
             "-f", audio_file
         ]
